@@ -12,7 +12,10 @@ Windows checker for known traces of the NIKKE PC launcher compromise reported in
 
 > **"No traces" does not mean safe.** Only published indicators are checked. If you ran the launcher after Oct 23, 2026 (GMT), changing key passwords and signing out of sessions is recommended regardless of the result.
 
-> **Verification:** v0.3.1 was run on a real Windows 11 PC (PowerShell 5.1) without NIKKE. All 5 languages and a test log detection finished without errors, and registry and network checks ran normally. Detection on a really infected PC, signature checks and network drive exclusion are not yet verified. Translations are machine-made; report errors via Issues.
+## How would you like to check?
+
+- **Run it yourself:** download the zip and double-click `nikke_check.bat`. [See usage](#usage)
+- **Let an AI assistant do it:** paste the prompt into an AI tool that can run commands on your PC. It runs the check and explains the result in plain language. [See the prompt](#check-with-an-ai-assistant)
 
 ## Usage
 
@@ -44,6 +47,8 @@ Rules: do not delete or change files, folders or registry entries. Do not run th
 - AI explanations can be wrong, so read the result txt yourself.
 
 **Share your result.** Reply to [this X post](https://x.com/DSloss58502/status/2117827841329082426) or open an [Issue](../../issues) with the result and any errors. Hide your username, PC name and paths, and do not post the whole result txt.
+
+> **Verification:** v0.3.1 was run on a real Windows 11 PC (PowerShell 5.1) without NIKKE. All 5 languages and a test log detection finished without errors, and registry and network checks ran normally. Detection on a really infected PC, signature checks and network drive exclusion are not yet verified. Translations are machine-made; report errors via Issues.
 
 ## Options
 
