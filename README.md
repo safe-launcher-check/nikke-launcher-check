@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/banner.png" alt="nikke-launcher-check: 니케 PC 런처 침해 흔적 점검 도구" width="100%"></p>
+
 # nikke-launcher-check
 
 승리의 여신: 니케 PC 런처 침해 사고(2026년 11월 공개)의 알려진 흔적을 찾는 Windows용 점검 도구입니다.
@@ -32,6 +34,8 @@ SmartScreen이나 백신이 경고할 수 있습니다. 실행 전에 `nikke_che
 ```powershell
 Get-FileHash .\nikke-launcher-check-v0.2.0.zip -Algorithm SHA256
 ```
+
+![결과 화면 예시. 실제 PC의 결과가 아닙니다.](assets/result-example.png)
 
 ## 판정
 
