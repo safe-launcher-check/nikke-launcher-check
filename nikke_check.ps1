@@ -635,7 +635,9 @@ function Find-NikkeRoots {
             ForEach-Object { [void]$found.Add($_.InstallLocation) }
     }
     $skip = '^(Windows|\$Recycle\.Bin|System Volume Information|ProgramData|Users|Recovery|PerfLogs)$'
-    $drives = Get-PSDrive -PSProvider FileSystem -ErrorAction SilentlyContinue | Where-Object { $_.Root -match '^[A-Za-z]:\\$' }
+    # Local fixed disks only. Network and removable drives are never searched unless given with -NikkePath.
+    $drives = @([IO.DriveInfo]::GetDrives() | Where-Object { $_.DriveType -eq [IO.DriveType]::Fixed -and $_.IsReady -and $_.Name -match '^[A-Za-z]:\\$' } |
+        ForEach-Object { [PSCustomObject]@{ Root = $_.Name } })
     foreach ($d in $drives) {
         $tops = Get-ChildItem -LiteralPath $d.Root -Directory -Force -ErrorAction SilentlyContinue |
             Where-Object { $_.Name -notmatch $skip }
