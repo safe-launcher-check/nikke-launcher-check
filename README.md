@@ -63,6 +63,8 @@ https://github.com/safe-launcher-check/nikke-launcher-check/releases/latest
 - AI 사용은 선택입니다. `nikke_check.bat` 더블클릭과 결과는 같습니다.
 - AI의 설명이 틀릴 수 있으니 결과 txt도 직접 확인하세요.
 
+**결과를 알려주세요.** 점검해 보셨다면 [X 게시물](https://x.com/DSloss58502/status/2117827841329082426)에 답글이나 [Issues](../../issues)로 판정과 오류를 공유해 주세요. 사용자명, PC 이름, 경로는 가려주세요. 결과 txt 전체는 올리지 마세요.
+
 ![결과 화면 예시. 실제 PC의 결과가 아닙니다.](assets/result-example.png)
 
 ## 판정

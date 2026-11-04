@@ -43,6 +43,8 @@ https://github.com/safe-launcher-check/nikke-launcher-check/releases/latest
 - 使用 AI 是選用的，雙擊 `nikke_check.bat` 結果相同。
 - AI 的說明可能有誤，請自行查看結果 txt。
 
+**分享結果。** 請在 [X 貼文](https://x.com/DSloss58502/status/2117827841329082426) 回覆或透過 [Issues](../../issues) 分享判定與錯誤。請隱藏使用者名稱、電腦名稱和路徑，不要貼出完整結果 txt。
+
 ## 選項
 
 `-Language ko|en|ja|zh-Hant|zh-Hans`, `-NikkePath "D:\NIKKE"`, `-DeepScan`, `-AllUsers`

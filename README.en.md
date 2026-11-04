@@ -43,6 +43,8 @@ Rules: do not delete or change files, folders or registry entries. Do not run th
 - Using AI is optional. Double-clicking `nikke_check.bat` gives the same result.
 - AI explanations can be wrong, so read the result txt yourself.
 
+**Share your result.** Reply to [this X post](https://x.com/DSloss58502/status/2117827841329082426) or open an [Issue](../../issues) with the result and any errors. Hide your username, PC name and paths, and do not post the whole result txt.
+
 ## Options
 
 `-Language ko|en|ja|zh-Hant|zh-Hans`, `-NikkePath "D:\NIKKE"`, `-DeepScan`, `-AllUsers`

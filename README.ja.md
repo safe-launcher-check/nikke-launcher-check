@@ -43,6 +43,8 @@ https://github.com/safe-launcher-check/nikke-launcher-check/releases/latest
 - AIの利用は任意です。`nikke_check.bat` のダブルクリックと結果は同じです。
 - AIの説明は誤る場合があるため、結果のtxtもご自身で確認してください。
 
+**結果をお知らせください。** [Xの投稿](https://x.com/DSloss58502/status/2117827841329082426)への返信または [Issues](../../issues) で判定とエラーを共有してください。ユーザー名、PC名、パスは伏せ、結果のtxt全体は投稿しないでください。
+
 ## オプション
 
 `-Language ko|en|ja|zh-Hant|zh-Hans`, `-NikkePath "D:\NIKKE"`, `-DeepScan`, `-AllUsers`
