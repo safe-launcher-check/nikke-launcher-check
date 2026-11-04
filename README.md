@@ -2,17 +2,19 @@
 
 # nikke-launcher-check
 
+한국어 | [English](README.en.md) | [日本語](README.ja.md) | [繁體中文](README.zh-Hant.md) | [简体中文](README.zh-Hans.md)
+
 승리의 여신: 니케 PC 런처 침해 사고(2026년 11월 공개)의 알려진 흔적을 찾는 Windows용 점검 도구입니다.
 
 - **읽기 전용:** 파일 삭제, 레지스트리 변경, 프로세스 종료, 차단 설정, 외부 통신을 하지 않습니다. 발견하면 경고만 합니다.
 - **치료 도구가 아닙니다:** 흔적을 찾아 알려줄 뿐 제거하지 않습니다.
 - **비공식 도구입니다:** SHIFT UP, Level Infinite와 관련이 없습니다.
 
-> **"흔적 미발견"은 안전하다는 뜻이 아닙니다.** 공개된 지표만 검사하므로, 로그가 삭제됐거나 흔적이 지워졌으면 찾지 못합니다. 2026-10-24 이후 PC 런처를 실행했다면 결과와 상관없이 주요 비밀번호 변경과 세션 로그아웃을 권장합니다.
+> **"흔적 미발견"은 안전하다는 뜻이 아닙니다.** 공개된 지표만 검사하므로, 로그가 삭제됐거나 흔적이 지워졌으면 찾지 못합니다. 2026년 10월 23일(GMT) 이후 PC 런처를 실행했다면 결과와 상관없이 주요 비밀번호 변경과 세션 로그아웃을 권장합니다.
 
-> **검증 상태:** v0.2.0은 가짜 테스트 환경에서만 시험했습니다. 레지스트리, 서명, 네트워크 검사는 실제 Windows 환경에서 아직 검증되지 않았습니다. 오류나 이상한 결과는 Issues로 알려주세요.
+> **검증 상태:** v0.3.0은 가짜 테스트 환경에서만 시험했습니다. 레지스트리, 서명, 네트워크 검사는 실제 Windows 환경에서 아직 검증되지 않았습니다. 오류나 이상한 결과는 Issues로 알려주세요.
 
-지표 기준: MotherSphere 공개 보고서 2026-11-03 20:40 GMT 갱신본
+지표 기준: MotherSphere 공개 보고서 2026-11-04 02:00 GMT 갱신본
 
 ## 사용법
 
@@ -27,12 +29,14 @@
 powershell -NoProfile -ExecutionPolicy Bypass -File .\nikke_check.ps1 -NikkePath "D:\NIKKE"
 ```
 
-옵션: `-DeepScan`(드라이브 정밀 탐색), `-AllUsers`(로드된 다른 계정의 레지스트리 확인)
+옵션: `-DeepScan`(드라이브 정밀 탐색), `-AllUsers`(로드된 다른 계정의 레지스트리 확인), `-Language ko|en|ja|zh-Hant|zh-Hans`(언어 지정, 기본은 Windows 언어)
+
+구글 플레이 게임즈판을 쓰는 경우 폴더 이름에 NIKKE가 있으면 함께 찾습니다. 못 찾으면 `-NikkePath`로 지정하세요. 구글 플레이 게임즈판 영향은 커뮤니티 제보이며 공식 확인 내용이 아닙니다.
 
 SmartScreen이나 백신이 경고할 수 있습니다. 실행 전에 `nikke_check.ps1` 내용을 직접 읽어보거나, 릴리스의 SHA-256 값과 비교하세요.
 
 ```powershell
-Get-FileHash .\nikke-launcher-check-v0.2.0.zip -Algorithm SHA256
+Get-FileHash .\nikke-launcher-check-v0.3.0.zip -Algorithm SHA256
 ```
 
 ![결과 화면 예시. 실제 PC의 결과가 아닙니다.](assets/result-example.png)
