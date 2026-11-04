@@ -1,4 +1,4 @@
-﻿# NIKKE PC launcher compromise (2026-11) - READ-ONLY indicator checker v0.3.0
+﻿# NIKKE PC launcher compromise (2026-11) - READ-ONLY indicator checker v0.3.1
 # Deletes nothing, changes nothing, closes nothing, blocks nothing, sends nothing. Warnings only.
 # Run without admin rights, on the Windows account that used NIKKE.
 # Indicators: MotherSphere public report, 2026-11-04 02:00 GMT revision.
@@ -11,6 +11,8 @@ param(
     [switch]$NoPrompt,
     [switch]$DeepScan,
     [switch]$AllUsers,
+    [string[]]$SearchRoot = @(),
+    [int]$ScanSeconds = 0,
     [ValidateSet('', 'ko', 'en', 'ja', 'zh-Hant', 'zh-Hans')][string]$Language = ''
 )
 
@@ -24,6 +26,8 @@ $script:Strings = @{
     deep = '설치 폴더 정밀 탐색 중입니다. 드라이브 크기에 따라 몇 분 걸릴 수 있습니다.'
     ask = '니케 설치 폴더를 찾지 못했습니다. 경로를 입력하세요 (없으면 그냥 Enter)'
     badpath = '입력한 경로에 Launcher 폴더가 없어 건너뜁니다.'
+    i_scan = '설치 폴더 탐색'
+    scan_cut = '{0}초 제한에 걸려 탐색을 일부만 했습니다. 니케가 있다면 -NikkePath로 경로를 지정하거나 -DeepScan을 사용하세요.'
     L_danger = '위험'
     L_warn = '주의'
     L_unknown = '확인불가'
@@ -124,6 +128,8 @@ $script:Strings = @{
     deep = 'Deep-searching for the install folder. This may take a few minutes.'
     ask = 'NIKKE install folder not found. Enter its path (or just press Enter)'
     badpath = 'No Launcher folder at that path; skipping.'
+    i_scan = 'Install folder search'
+    scan_cut = 'Search stopped at the {0}-second limit. If NIKKE is installed, use -NikkePath or -DeepScan.'
     L_danger = 'DANGER'
     L_warn = 'WARNING'
     L_unknown = 'UNKNOWN'
@@ -224,6 +230,8 @@ $script:Strings = @{
     deep = 'インストールフォルダを詳細検索中です。数分かかる場合があります。'
     ask = 'NIKKEのインストールフォルダが見つかりません。パスを入力してください（なければEnter）'
     badpath = 'そのパスにLauncherフォルダがないためスキップします。'
+    i_scan = 'インストールフォルダ検索'
+    scan_cut = '{0}秒の制限で検索を途中で終了しました。NIKKEがある場合は -NikkePath または -DeepScan を使ってください。'
     L_danger = '危険'
     L_warn = '注意'
     L_unknown = '確認不可'
@@ -324,6 +332,8 @@ $script:Strings = @{
     deep = '正在深入搜尋安裝資料夾，可能需要數分鐘。'
     ask = '找不到 NIKKE 安裝資料夾。請輸入路徑（沒有請直接按 Enter）'
     badpath = '該路徑沒有 Launcher 資料夾，已略過。'
+    i_scan = '安裝資料夾搜尋'
+    scan_cut = '搜尋已於 {0} 秒上限停止。若有安裝 NIKKE，請使用 -NikkePath 或 -DeepScan。'
     L_danger = '危險'
     L_warn = '注意'
     L_unknown = '無法確認'
@@ -424,6 +434,8 @@ $script:Strings = @{
     deep = '正在深入搜索安装文件夹，可能需要数分钟。'
     ask = '找不到 NIKKE 安装文件夹。请输入路径（没有请直接按 Enter）'
     badpath = '该路径没有 Launcher 文件夹，已跳过。'
+    i_scan = '安装文件夹搜索'
+    scan_cut = '搜索已在 {0} 秒上限停止。若已安装 NIKKE，请使用 -NikkePath 或 -DeepScan。'
     L_danger = '危险'
     L_warn = '注意'
     L_unknown = '无法确认'
@@ -634,20 +646,6 @@ function Find-NikkeRoots {
             Where-Object { $_.DisplayName -match 'NIKKE' -and $_.InstallLocation } |
             ForEach-Object { [void]$found.Add($_.InstallLocation) }
     }
-    $skip = '^(Windows|\$Recycle\.Bin|System Volume Information|ProgramData|Users|Recovery|PerfLogs)$'
-    # Local fixed disks only. Network and removable drives are never searched unless given with -NikkePath.
-    $drives = @([IO.DriveInfo]::GetDrives() | Where-Object { $_.DriveType -eq [IO.DriveType]::Fixed -and $_.IsReady -and $_.Name -match '^[A-Za-z]:\\$' } |
-        ForEach-Object { [PSCustomObject]@{ Root = $_.Name } })
-    foreach ($d in $drives) {
-        $tops = Get-ChildItem -LiteralPath $d.Root -Directory -Force -ErrorAction SilentlyContinue |
-            Where-Object { $_.Name -notmatch $skip }
-        foreach ($t in $tops) {
-            if ($t.Name -match 'NIKKE') { [void]$found.Add($t.FullName) }
-            Get-ChildItem -LiteralPath $t.FullName -Directory -Recurse -Depth 3 -Force -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -match 'NIKKE' } |
-                ForEach-Object { [void]$found.Add($_.FullName) }
-        }
-    }
     if ($env:NIKKE_LAUNCHER) { [void]$found.Add($env:NIKKE_LAUNCHER) }
     foreach ($hive in @('HKCU:', 'HKLM:')) {
         $exe = Resolve-RegPath (Get-RegDefault "$hive\Software\Microsoft\Windows\CurrentVersion\App Paths\nikke_launcher.exe")
@@ -666,15 +664,28 @@ function Find-NikkeRoots {
         if ($full) { $roots[(Resolve-Path -LiteralPath $full).Path] = $true }
     }
     foreach ($c in $found) { & $addRoot $c }
-    if ($DeepScan -or $roots.Count -eq 0) {
-        Write-Host (T 'deep')
-        $deepSkip = '^(Windows|\$Recycle\.Bin|System Volume Information)$'
-        foreach ($d in $drives) {
-            Get-ChildItem -LiteralPath $d.Root -Directory -Force -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -notmatch $deepSkip } | ForEach-Object {
-                    Get-ChildItem -LiteralPath $_.FullName -Directory -Recurse -Depth 8 -Force -Filter 'intl_service' -ErrorAction SilentlyContinue |
-                        ForEach-Object { & $addRoot (Split-Path -Parent $_.FullName) }
-                }
+    # Time-limited breadth-first search of local fixed disks. Network, removable and very slow drives cannot hang the check.
+    $starts = @($SearchRoot)
+    if ($starts.Count -eq 0) {
+        $starts = @([IO.DriveInfo]::GetDrives() | Where-Object { $_.DriveType -eq [IO.DriveType]::Fixed -and $_.IsReady -and $_.Name -match '^[A-Za-z]:\\$' } | ForEach-Object { $_.Name })
+    }
+    $maxDepth = 4; $limit = 60
+    if ($DeepScan) { $maxDepth = 9; $limit = 1800; Write-Host (T 'deep') }
+    if ($ScanSeconds -gt 0) { $limit = $ScanSeconds }
+    $skip = '^(Windows|\$Recycle\.Bin|System Volume Information|Recovery|PerfLogs)$'
+    $queue = New-Object System.Collections.Queue
+    foreach ($st in $starts) { $queue.Enqueue(@($st, 0)) }
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    while ($queue.Count -gt 0) {
+        if ($sw.Elapsed.TotalSeconds -ge $limit) { $script:ScanCut = $limit; break }
+        $cur = $queue.Dequeue()
+        $kids = @(Get-ChildItem -LiteralPath $cur[0] -Directory -Force -ErrorAction SilentlyContinue)
+        foreach ($k in $kids) {
+            if ($cur[1] -eq 0 -and $k.Name -match $skip) { continue }
+            if ($k.Attributes -band [IO.FileAttributes]::ReparsePoint) { continue }
+            if ($k.Name -match 'NIKKE') { & $addRoot $k.FullName }
+            elseif ($k.Name -eq 'intl_service') { & $addRoot (Split-Path -Parent $k.FullName) }
+            if (($cur[1] + 1) -lt $maxDepth) { $queue.Enqueue(@($k.FullName, ($cur[1] + 1))) }
         }
     }
     return @($roots.Keys)
@@ -685,6 +696,7 @@ Write-Host (T 'title') -ForegroundColor Cyan
 Write-Host (T 'intro')
 Write-Host ''
 
+$script:ScanCut = 0
 $roots = @(Find-NikkeRoots)
 if ($roots.Count -eq 0 -and -not $NoPrompt) {
     $ans = Read-Host (T 'ask')
@@ -697,6 +709,7 @@ if ($roots.Count -eq 0 -and -not $NoPrompt) {
 }
 
 # ---------- 2. Launcher running ----------
+if ($script:ScanCut -gt 0) { Add-Finding 'unknown' (T 'i_scan') (T 'scan_cut' $script:ScanCut) }
 $running = @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -match 'nikke|tbs_browser' })
 if ($running.Count -gt 0) {
     Add-Finding 'warn' (T 'i_run') (T 'running' (($running | Select-Object -ExpandProperty ProcessName -Unique) -join ', '))
