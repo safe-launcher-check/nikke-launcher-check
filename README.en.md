@@ -21,6 +21,28 @@ Windows checker for known traces of the NIKKE PC launcher compromise reported in
 3. Run it on the Windows account that used NIKKE.
 4. The result appears on screen and is saved to your Desktop as `NIKKE_check_<date>_<time>.txt`.
 
+## Check with an AI assistant
+
+If you use an AI tool that can run commands on your PC (Claude, ChatGPT, etc.), you can paste this:
+
+```text
+Check this PC with the latest NIKKE PC launcher checker release.
+https://github.com/safe-launcher-check/nikke-launcher-check/releases/latest
+
+1. Download the release zip to a new temp folder and extract it.
+2. Compare the zip's SHA-256 with the release page. Stop if it differs.
+3. Read nikke_check.ps1 and report whether it has delete, change or network commands. If it does, do not run it.
+4. Run it on the current account without admin rights. Stop and tell me if it takes over 5 minutes.
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\nikke_check.ps1 -NoPrompt
+5. Explain the result in plain language. Do not describe "no traces" as safe.
+
+Rules: do not delete or change files, folders or registry entries. Do not run the NIKKE launcher. Hide my username and PC name, and never write passwords or tokens.
+```
+
+- **On a PC with a DANGER result, do not trust AI tools either.** This malware also targets AI tool credentials. Revoke and reissue those tokens from another device.
+- Using AI is optional. Double-clicking `nikke_check.bat` gives the same result.
+- AI explanations can be wrong, so read the result txt yourself.
+
 ## Options
 
 `-Language ko|en|ja|zh-Hant|zh-Hans`, `-NikkePath "D:\NIKKE"`, `-DeepScan`, `-AllUsers`

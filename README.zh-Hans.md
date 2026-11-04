@@ -21,6 +21,28 @@
 3. 请使用玩过 NIKKE 的 Windows 账户运行。
 4. 结果会显示在屏幕上，并以 `NIKKE_check_日期_时间.txt` 保存到桌面。
 
+## 使用 AI 检查
+
+如果您使用能在电脑上运行命令的 AI 工具（Claude、ChatGPT 等），可以粘贴以下内容：
+
+```text
+请用最新版的 NIKKE PC 启动器检查工具检查这台电脑。
+https://github.com/safe-launcher-check/nikke-launcher-check/releases/latest
+
+1. 将发布页的 zip 下载到新的临时文件夹并解压。
+2. 比对 zip 的 SHA-256 与发布页的值。不同就停止。
+3. 阅读 nikke_check.ps1，报告是否有删除、更改或外部连接命令。若有则不要运行。
+4. 不使用管理员权限，以当前账户运行。超过 5 分钟就停止并报告。
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\nikke_check.ps1 -NoPrompt
+5. 用通俗的话说明结果。不要把“没有痕迹”说成安全。
+
+规则：不要删除或更改文件、文件夹、注册表。不要运行 NIKKE 启动器。隐藏用户名和电脑名称，不要写出密码或令牌。
+```
+
+- **结果为“危险”的电脑上，也不要信任 AI 工具。** 此恶意程序也针对 AI 工具的凭据。请在另一台设备吊销并重新签发令牌。
+- 使用 AI 是可选的，双击 `nikke_check.bat` 结果相同。
+- AI 的说明可能有误，请自行查看结果 txt。
+
 ## 选项
 
 `-Language ko|en|ja|zh-Hant|zh-Hans`, `-NikkePath "D:\NIKKE"`, `-DeepScan`, `-AllUsers`

@@ -41,6 +41,28 @@ SmartScreen이나 백신이 경고할 수 있습니다. 실행 전에 `nikke_che
 Get-FileHash .\nikke-launcher-check-v0.3.1.zip -Algorithm SHA256
 ```
 
+## AI로 점검하기
+
+PC에서 명령을 실행할 수 있는 AI 도구(Claude, ChatGPT 등)가 있다면 아래 내용을 붙여넣어 점검을 맡길 수 있습니다.
+
+```text
+최신 릴리스의 니케 PC 런처 점검 도구로 이 PC를 점검해줘.
+https://github.com/safe-launcher-check/nikke-launcher-check/releases/latest
+
+1. 릴리스의 zip을 새 임시 폴더에 받아 압축을 풀어.
+2. zip의 SHA-256을 릴리스 페이지 값과 비교해. 다르면 멈춰.
+3. nikke_check.ps1을 읽어 삭제, 변경, 외부 통신 명령이 없는지 확인하고 알려줘. 있으면 실행하지 마.
+4. 관리자 권한 없이 현재 계정으로 실행해. 5분이 넘으면 멈추고 알려줘.
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\nikke_check.ps1 -NoPrompt
+5. 판정과 항목별 결과를 쉬운 말로 설명해줘. "흔적 미발견"을 안전하다고 말하지 마.
+
+규칙: 파일, 폴더, 레지스트리를 삭제하거나 고치지 마. 니케 런처를 실행하지 마. 사용자명과 PC 이름은 가리고, 비밀번호와 토큰은 적지 마.
+```
+
+- **"위험"이 나온 PC에서는 AI 도구도 믿지 마세요.** 이 악성코드는 AI 도구의 인증 정보도 노립니다. 해당 계정의 토큰을 다른 기기에서 폐기하고 다시 발급하세요.
+- AI 사용은 선택입니다. `nikke_check.bat` 더블클릭과 결과는 같습니다.
+- AI의 설명이 틀릴 수 있으니 결과 txt도 직접 확인하세요.
+
 ![결과 화면 예시. 실제 PC의 결과가 아닙니다.](assets/result-example.png)
 
 ## 판정

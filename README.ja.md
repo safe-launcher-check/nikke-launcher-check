@@ -21,6 +21,28 @@
 3. NIKKEを使っていたWindowsアカウントで実行してください。
 4. 結果は画面に表示され、デスクトップに `NIKKE_check_日付_時刻.txt` として保存されます。
 
+## AIで確認する
+
+PCでコマンドを実行できるAIツール（Claude、ChatGPTなど）を使う場合は、次を貼り付けてください。
+
+```text
+最新リリースのNIKKE PCランチャー確認ツールでこのPCを確認してください。
+https://github.com/safe-launcher-check/nikke-launcher-check/releases/latest
+
+1. リリースのzipを新しい一時フォルダにダウンロードして展開する。
+2. zipのSHA-256をリリースページの値と比較する。異なれば中止する。
+3. nikke_check.ps1 を読み、削除・変更・外部通信の命令がないか確認して報告する。あれば実行しない。
+4. 管理者権限なしで現在のアカウントで実行する。5分を超えたら中止して報告する。
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\nikke_check.ps1 -NoPrompt
+5. 結果を分かりやすく説明する。「痕跡なし」を安全と言わない。
+
+ルール: ファイル、フォルダ、レジストリを削除・変更しない。NIKKEランチャーを起動しない。ユーザー名とPC名は伏せ、パスワードやトークンは書かない。
+```
+
+- **「危険」と出たPCではAIツールも信頼しないでください。** このマルウェアはAIツールの認証情報も狙います。別の端末でトークンを失効させ、再発行してください。
+- AIの利用は任意です。`nikke_check.bat` のダブルクリックと結果は同じです。
+- AIの説明は誤る場合があるため、結果のtxtもご自身で確認してください。
+
 ## オプション
 
 `-Language ko|en|ja|zh-Hant|zh-Hans`, `-NikkePath "D:\NIKKE"`, `-DeepScan`, `-AllUsers`
